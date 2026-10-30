@@ -2,7 +2,7 @@ import streamlit as st
 import random
 
 # Sayfa Yapılandırması
-st.set_page_config(page_title="EduLingo - Süper Kampüs", page_icon="🍋", layout="centered")
+st.set_page_config(page_title="EduLingo - 5. Sınıf Sosyal Kampüs", page_icon="🍋", layout="centered")
 
 # Tasarım & CSS Stilleri
 st.markdown("""
@@ -16,7 +16,7 @@ st.markdown("""
     }
     .main-title {
         color: #D4A017;
-        font-size: 36px;
+        font-size: 34px;
         font-weight: bold;
         text-align: center;
     }
@@ -54,36 +54,37 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Oturum Veritabanı Simülasyonu
+# Oturum Veritabanı ve 5. Sınıf Öğrencileri
 if "giris_yapildi" not in st.session_state:
     st.session_state.giris_yapildi = False
 if "ogrenci_bilgi" not in st.session_state:
     st.session_state.ogrenci_bilgi = {}
 if "ogrenciler_veritabani" not in st.session_state:
     st.session_state.ogrenciler_veritabani = {
-        "11111111111": {"no": "101", "ad": "Zeynep Yılmaz", "puan": 175, "streak": 5},
-        "22222222222": {"no": "102", "ad": "Ali Rıza", "puan": 190, "streak": 3},
-        "33333333333": {"no": "103", "ad": "Rana Aksoy", "puan": 220, "streak": 7}
+        "11111111111": {"no": "501", "ad": "Zeynep Yılmaz", "puan": 240, "streak": 5},
+        "22222222222": {"no": "502", "ad": "Ali Rıza Demir", "puan": 210, "streak": 3},
+        "33333333333": {"no": "503", "ad": "Rana Aksoy", "puan": 290, "streak": 7},
+        "44444444444": {"no": "504", "ad": "Kerem Çelik", "puan": 180, "streak": 2}
     }
 if "haberler" not in st.session_state:
     st.session_state.haberler = [
-        {"baslik": "🚨 Çikolata Krizi!", "icerik": "Etimesgut Kampüsü'nde Ali Rıza dün hocaya çikolata verdi, gören hoca ağlamaktan helak oldu! 🍫😂", "begenen": 42},
-        {"baslik": "🏆 Zirve Yarışı", "icerik": "Zeynep son testte tam puan alarak liderlik koltuğunu sağlama aldı. 🔥", "begenen": 19}
+        {"baslik": "🚨 Çikolata Krizi!", "icerik": "5-A sınıfında Ali Rıza dün fen hocasına çikolata ikram etti, hoca mutluluktan havalara uçtu! 🍫😂", "begenen": 42},
+        {"baslik": "🏆 Zirve Yarışı Kızıştı", "icerik": "Rana, son 5. sınıf matematik testinde tam puan alarak liderliği ele geçirdi. 🔥", "begenen": 19}
     ]
 if "chat_odasi" not in st.session_state:
     st.session_state.chat_odasi = [
-        {"isim": "Ali Rıza", "mesaj": "Arkadaşlar matematik testi çok zor, Cahit Arf olan yardim etsin! 📐"},
-        {"isim": "Zeynep Yılmaz", "mesaj": "Tesla rozeti bu hafta bende, yaklaşmayın! ⚡"}
+        {"isim": "Ali Rıza Demir", "mesaj": "Arkadaşlar sosyal bilgilerdeki ilk Türk devletleri sorusunu bilen var mı? 🏛️"},
+        {"isim": "Rana Aksoy", "mesaj": "Asya Hun Devleti'ni unuttun mu Ali Rıza? Ben çözdüm bile! 😎"}
     ]
 
 # --- 1. GİRİŞ EKRANI ---
 if not st.session_state.giris_yapildi:
-    st.markdown('<p class="main-title">🍋 EduLingo Süper Kampüs</p>', unsafe_allow_html=True)
+    st.markdown('<p class="main-title">🍋 EduLingo 5. Sınıf Sosyal Kampüs</p>', unsafe_allow_html=True)
     
     st.markdown("""
         <div style="background-color: #FFFFFF; padding: 20px; border-radius: 15px; text-align: center; border: 2px dashed #FFD700; margin-bottom: 20px;">
             <p style="font-size: 18px; color: #333; font-style: italic; font-weight: bold;">
-                "Zirveye giden yol tıklamayla değil, her gün çözülen soruyla açılır! Sohbet et, test çöz, rozeti kap! 🚀"
+                "5. Sınıfın en kral kampüsüne hoş geldin! Soruları çöz, sohbet et, haftanın Sosyal Kelebeği ol! 🚀"
             </p>
         </div>
     """, unsafe_allow_html=True)
@@ -92,7 +93,8 @@ if not st.session_state.giris_yapildi:
     
     with st.form("giris_formu"):
         tc_input = st.text_input("T.C. Kimlik Numarası (11 Haneli):", max_chars=11)
-        no_input = st.text_input("Öğrenci Numarası:")
+        no_input = st.text_input("5. Sınıf Öğrenci Numarası:")
+        ad_input = st.text_input("Adın ve Soyadın (Örn: Defne Kaya):")
         giris_butonu = st.form_submit_button("🚀 Kampüse Giriş Yap")
         
         if giris_butonu:
@@ -105,14 +107,14 @@ if not st.session_state.giris_yapildi:
                 else:
                     st.error("❌ Hatalı Öğrenci Numarası!")
             else:
-                if len(tc_input) == 11 and no_input:
-                    yeni_ad = f"Öğrenci ({no_input})"
-                    st.session_state.ogrenciler_veritabani[tc_input] = {"no": no_input, "ad": yeni_ad, "puan": 10, "streak": 1}
+                if len(tc_input) == 11 and no_input and ad_input:
+                    yeni_ogrenci = {"no": no_input, "ad": ad_input, "puan": 20, "streak": 1}
+                    st.session_state.ogrenciler_veritabani[tc_input] = yeni_ogrenci
                     st.session_state.giris_yapildi = True
-                    st.session_state.ogrenci_bilgi = st.session_state.ogrenciler_veritabani[tc_input]
+                    st.session_state.ogrenci_bilgi = yeni_ogrenci
                     st.rerun()
                 else:
-                    st.error("⚠️ Eksik veya hatalı bilgi girdin.")
+                    st.error("⚠️ Lütfen tüm alanları eksiksiz ve doğru doldur.")
 
 # --- 2. ANA KAMPÜS EKRANI ---
 else:
@@ -134,7 +136,7 @@ else:
         """, unsafe_allow_html=True)
     
     with col_konusma:
-        mesaj = f"Harikasın {ogrenci['ad']}! 🔥 {ogrenci['streak']} günlük serin var. Canlı sohbet odasında arkadaşlar kaynıyor, testi çözüp zirveyi zorla!"
+        mesaj = f"Harika gidiyorsun {ogrenci['ad']}! 🔥 5. sınıf serin {ogrenci['streak']} gün oldu. Canlı sohbette arkadaşların seni bekliyor, testleri çözüp rozetleri kapma vakti!"
         st.markdown(f"""
             <div class="limoncan-box">
                 <p style="margin: 0; font-size: 15px; color: #333333; font-weight: 500;">
@@ -153,7 +155,7 @@ else:
         "📰 Kampüs Panosu", 
         "💬 Canlı Sohbet", 
         "🏆 Liderlik Tablosu", 
-        "📝 Çoklu Testler", 
+        "📝 5. Sınıf Testleri", 
         "👑 Mahlaslar & Rozetler"
     ])
     
@@ -182,8 +184,8 @@ else:
                     st.rerun()
 
     with sekme2:
-        st.subheader("💬 Kampüs Canlı Sohbet Odası")
-        st.markdown("Arkadaşlarına mesaj gönder, kampüsün nabzını tut!")
+        st.subheader("💬 5. Sınıf Kampüs Canlı Sohbet Odası")
+        st.markdown("Sınıf arkadaşlarınla anlaş, soruları tartış, kampüsün tadını çıkar!")
         
         for chat in st.session_state.chat_odasi:
             st.markdown(f"""
@@ -200,10 +202,9 @@ else:
                 st.rerun()
 
     with sekme3:
-        st.subheader("🏆 Okul Geneli Liderlik Tablosu")
-        st.markdown("En çok XP toplayan zirvedekiler:")
+        st.subheader("🏆 5. Sınıf Liderlik Tablosu")
+        st.markdown("En çok XP toplayan kampüsinciler:")
         
-        # Puanlarına göre sıralama
         sirali_ogrenciler = sorted(st.session_state.ogrenciler_veritabani.values(), key=lambda x: x["puan"], reverse=True)
         
         for sira, o in enumerate(sirali_ogrenciler, 1):
@@ -216,57 +217,99 @@ else:
             """, unsafe_allow_html=True)
 
     with sekme4:
-        st.subheader("📝 Branş Soru Paketleri")
-        brans = st.selectbox("Hangi dersten soru çözmek istersin?", ["Bilişim & Yazılım", "Matematik", "Fen Bilimleri"])
+        st.subheader("📝 5. Sınıf Seviye Testleri")
+        ders = st.selectbox("Hangi dersten soru çözmek istersin?", ["Matematik", "Fen Bilimleri", "Türkçe", "Sosyal Bilgiler"])
         
-        if brans == "Bilişim & Yazılım":
-            cevap = st.radio("1. Aşağıdakilerden hangisi bir yazılım dilidir?", ["Python", "HTML", "Tornavida", "Cetvel"])
-            if st.button("Cevabı Gönder", key="test1"):
-                if cevap == "Python":
+        if ders == "Matematik":
+            st.markdown("#### Soru 1/2: Kesirler")
+            q1 = st.radio("Yarım ile çeyreğin toplamı hangi kesiri ifade eder?", ["3/4", "1/2", "1/8", "2/3"], key="m1")
+            q2 = st.radio("Bir çiftlikte 48 koyunun 1/4'ü satıldı. Geriye kaç koyun kaldı?", ["12", "36", "24", "40"], key="m2")
+            if st.button("Matematik Testini Gönder"):
+                dogru_sayisi = 0
+                if q1 == "3/4": dogru_sayisi += 1
+                if q2 == "36": dogru_sayisi += 1
+                
+                if dogru_sayisi == 2:
                     st.balloons()
-                    ogrenci["puan"] += 25
-                    st.success("Tebrikler! +25 Puan kazandın! 🍋")
+                    ogrenci["puan"] += 50
+                    st.success("Mükemmel! 2/2 yaptın, +50 Puan kazandın! 📐")
                 else:
-                    st.error("Yanlış cevap, bir daha dene!")
-        elif brans == "Matematik":
-            cevap2 = st.radio("1. 5 x 8 işleminin sonucu nedir?", ["35", "40", "45", "50"])
-            if st.button("Cevabı Gönder", key="test2"):
-                if cevap2 == "40":
+                    st.warning(f"Doğru sayısı: {dogru_sayisi}/2. Eksiklerini kapatıp tekrar dene!")
+                    
+        elif ders == "Fen Bilimleri":
+            st.markdown("#### Soru 1/2: Güneş, Dünya ve Ay")
+            q1 = st.radio("Güneş'in kendi ekseni etrafındaki dönme hareketi sonucu ne olur?", ["Güneş kendi etrafında dönerken ısı yayar", "Güneş lekeleri yer değiştirir", "Gece ve gündüz oluşur", "Mevsimler oluşur"], key="f1")
+            q2 = st.radio("Ay'ın ana evreleri arasındaki süre yaklaşık kaç gündür?", ["1 hafta", "1 ay", "2 hafta", "29-30 gün (yaklaşık 1 hafta ara ile 4 ana evre)"], key="f2")
+            if st.button("Fen Testini Gönder"):
+                dogru_sayisi = 0
+                if q1 == "Güneş lekeleri yer değiştirir": dogru_sayisi += 1
+                if q2 == "29-30 gün (yaklaşık 1 hafta ara ile 4 ana evre)": dogru_sayisi += 1
+                
+                if dogru_sayisi >= 1:
                     st.balloons()
-                    ogrenci["puan"] += 30
-                    st.success("Harikasın Cahit Arf adayı! +30 Puan kazandın! 📐")
+                    ogrenci["puan"] += 40
+                    st.success("Tebrikler Tesla adayı! +40 Puan kaptın! ⚡")
                 else:
-                    st.error("Yanlış cevap!")
+                    st.error("Bir dahaki sefere başaracaksın!")
+
+        elif ders == "Türkçe":
+            st.markdown("#### Soru 1/2: Sözcükte Anlam ve Noktalama")
+            q1 = st.radio("'Tatlı' sözcüğü hangi cümlede mecaz anlamda kullanılmıştır?", ["Annemin yaptığı tatlı kurabiyeleri çok sevdim.", "Bize çok tatlı ve güler yüzlü bir öğretmen geldi.", "Çorbaya biraz daha tatlı biber salçası ekledik.", "Yediğimiz karpuz inanılmaz tatlıydı."], key="t1")
+            q2 = st.radio("Aşağıdaki cümlelerin hangisinde yazım yanlışı vardır?", ["Ankara'ya yarın gideceğiz.", "Yarınki sınavda başarılar dilerim.", "Kitap'ı masanın üstüne bıraktı.", "Kedimiz pamuk da bizimle yaşıyor."], key="t2")
+            if st.button("Türkçe Testini Gönder"):
+                dogru_sayisi = 0
+                if q1 == "Bize çok tatlı ve güler yüzlü bir öğretmen geldi.": dogru_sayisi += 1
+                if q2 == "Kitap'ı masanın üstüne bıraktı.": dogru_sayisi += 1
+                
+                if dogru_sayisi == 2:
+                    st.balloons()
+                    ogrenci["puan"] += 50
+                    st.success("TDK Başkanlığına göz kırpıyorsun! +50 Puan! 📜")
+                else:
+                    st.warning("Tekrar deneyerek puanını katlayabilirsin!")
+
         else:
-            cevap3 = st.radio("1. Suyun donma sıcaklığı kaç derecedir?", ["0", "100", "50", "-10"])
-            if st.button("Cevabı Gönder", key="test3"):
-                if cevap3 == "0":
+            st.markdown("#### Soru 1/2: Ülkemizin Doğal Güzellikleri ve Tarihi")
+            q1 = st.radio("Aşağıdakilerden hangisi UNESCO Dünya Miras Listesi'nde yer alan illerimizden biridir?", ["Nevşehir (Kapadokya)", "Ankara", "Eskişehir", "Yozgat"], key="s1")
+            q2 = st.radio("İlk Türk devletlerinde göçebe yaşam tarzının temel geçim kaynağı hangisiydi?", ["Tarım", "Hayvancılık", "Denizcilik", "Dokumacılık"], key="s2")
+            if st.button("Sosyal Bilgiler Testini Gönder"):
+                dogru_sayisi = 0
+                if q1 == "Nevşehir (Kapadokya)": dogru_sayisi += 1
+                if q2 == "Hayvancılık": dogru_sayisi += 1
+                
+                if dogru_sayisi == 2:
                     st.balloons()
-                    ogrenci["puan"] += 30
-                    st.success("Süpersin Nikola Tesla! +30 Puan kazandın! ⚡")
+                    ogrenci["puan"] += 50
+                    st.success("Süpersin! +50 Puan kazandın! 🌍")
                 else:
-                    st.error("Yanlış cevap!")
+                    st.warning("Biraz daha sosyal bilgiler tekrarı harika olur!")
 
     with sekme5:
         st.subheader("👑 Haftanın Efsane Mahlasları ve Rozetleri")
-        st.markdown("Her pazartesi güncellenen resmi kampüs unvanları:")
+        st.markdown("Okul hocası tarafından her pazartesi bizzat atanan resmi kampüs unvanları:")
         
         st.markdown("""
             <div class="badge-box">
                 <h3 style="color: #D4A017; margin: 0;">⚡ Haftanın Nikola Tesla'sı (Fen)</h3>
                 <p style="margin: 5px 0 0 0; font-size: 16px; font-weight: bold; color: #333;">Zeynep Yılmaz</p>
-                <p style="font-size: 13px; color: #666; margin: 2px 0 0 0;">Laboratuvarda ampulü ilk o icat etti, kimse tutamıyor!</p>
+                <p style="font-size: 13px; color: #666; margin: 2px 0 0 0;">Fen laboratuvarının altını üstüne getiren dahi!</p>
             </div>
             
             <div class="badge-box">
-                <h3 style="color: #D4A017; margin: 0;">📜 Haftanın Türk Dil Kurumu Başkanı (Türkçe)</h3>
-                <p style="margin: 5px 0 0 0; font-size: 16px; font-weight: bold; color: #333;">Ali Rıza</p>
-                <p style="font-size: 13px; color: #666; margin: 2px 0 0 0;">Devrik cümleleri tek bakışta yakalayıp imha ediyor!</p>
+                <h3 style="color: #D4A017; margin: 0;">📜 Haftanın TDK Başkanı (Türkçe)</h3>
+                <p style="margin: 5px 0 0 0; font-size: 16px; font-weight: bold; color: #333;">Ali Rıza Demir</p>
+                <p style="font-size: 13px; color: #666; margin: 2px 0 0 0;">Dil kurallarına uymayan cümleleri affetmiyor!</p>
             </div>
 
             <div class="badge-box">
                 <h3 style="color: #D4A017; margin: 0;">📐 Haftanın Cahit Arf'ı (Matematik)</h3>
                 <p style="margin: 5px 0 0 0; font-size: 16px; font-weight: bold; color: #333;">Rana Aksoy</p>
-                <p style="font-size: 13px; color: #666; margin: 2px 0 0 0;">Matematik sorularını ağlatan ezici güç tahtayı ele geçirdi!</p>
+                <p style="font-size: 13px; color: #666; margin: 2px 0 0 0;">Matematik problemlerini tek hamlede çözen lider!</p>
+            </div>
+
+            <div class="badge-box" style="border: 2px solid #FF69B4; background: linear-gradient(135deg, #FFF0F5, #FFE4E1);">
+                <h3 style="color: #FF1493; margin: 0;">🦋 Haftanın Sosyal Kelebeği (Hoca Seçimi)</h3>
+                <p style="margin: 5px 0 0 0; font-size: 16px; font-weight: bold; color: #333;">Kerem Çelik</p>
+                <p style="font-size: 13px; color: #666; margin: 2px 0 0 0;">Okulun en neşeli, sohbete en çok katkı sağlayan ve hocanın gözdesi olan ismi!</p>
             </div>
         """, unsafe_allow_html=True)
