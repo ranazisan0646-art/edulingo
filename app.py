@@ -2,7 +2,7 @@ import streamlit as st
 import random
 
 # Sayfa Yapılandırması
-st.set_page_config(page_title="EduLingo - Akıllı Kampüs", page_icon="🍋", layout="centered")
+st.set_page_config(page_title="EduLingo - Süper Kampüs", page_icon="🍋", layout="centered")
 
 # Tasarım & CSS Stilleri
 st.markdown("""
@@ -44,6 +44,13 @@ st.markdown("""
         margin-bottom: 10px;
         text-align: center;
     }
+    .chat-bubble {
+        background-color: #FFFFFF;
+        padding: 10px 15px;
+        border-radius: 10px;
+        margin-bottom: 8px;
+        border: 1px solid #FFE066;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -54,23 +61,29 @@ if "ogrenci_bilgi" not in st.session_state:
     st.session_state.ogrenci_bilgi = {}
 if "ogrenciler_veritabani" not in st.session_state:
     st.session_state.ogrenciler_veritabani = {
-        "11111111111": {"no": "101", "ad": "Zeynep Yılmaz", "puan": 150, "streak": 5},
-        "22222222222": {"no": "102", "ad": "Ali Rıza", "puan": 190, "streak": 3}
+        "11111111111": {"no": "101", "ad": "Zeynep Yılmaz", "puan": 175, "streak": 5},
+        "22222222222": {"no": "102", "ad": "Ali Rıza", "puan": 190, "streak": 3},
+        "33333333333": {"no": "103", "ad": "Rana Aksoy", "puan": 220, "streak": 7}
     }
 if "haberler" not in st.session_state:
     st.session_state.haberler = [
         {"baslik": "🚨 Çikolata Krizi!", "icerik": "Etimesgut Kampüsü'nde Ali Rıza dün hocaya çikolata verdi, gören hoca ağlamaktan helak oldu! 🍫😂", "begenen": 42},
         {"baslik": "🏆 Zirve Yarışı", "icerik": "Zeynep son testte tam puan alarak liderlik koltuğunu sağlama aldı. 🔥", "begenen": 19}
     ]
+if "chat_odasi" not in st.session_state:
+    st.session_state.chat_odasi = [
+        {"isim": "Ali Rıza", "mesaj": "Arkadaşlar matematik testi çok zor, Cahit Arf olan yardim etsin! 📐"},
+        {"isim": "Zeynep Yılmaz", "mesaj": "Tesla rozeti bu hafta bende, yaklaşmayın! ⚡"}
+    ]
 
 # --- 1. GİRİŞ EKRANI ---
 if not st.session_state.giris_yapildi:
-    st.markdown('<p class="main-title">🍋 EduLingo Kampüsü</p>', unsafe_allow_html=True)
+    st.markdown('<p class="main-title">🍋 EduLingo Süper Kampüs</p>', unsafe_allow_html=True)
     
     st.markdown("""
         <div style="background-color: #FFFFFF; padding: 20px; border-radius: 15px; text-align: center; border: 2px dashed #FFD700; margin-bottom: 20px;">
             <p style="font-size: 18px; color: #333; font-style: italic; font-weight: bold;">
-                "Zirveye giden yol tıklamayla değil, her gün çözülen soruyla açılır! Haftanın rozetini kap, mahlasını al! 🚀"
+                "Zirveye giden yol tıklamayla değil, her gün çözülen soruyla açılır! Sohbet et, test çöz, rozeti kap! 🚀"
             </p>
         </div>
     """, unsafe_allow_html=True)
@@ -121,7 +134,7 @@ else:
         """, unsafe_allow_html=True)
     
     with col_konusma:
-        mesaj = f"Selam {ogrenci['ad']}! 🔥 {ogrenci['streak']} gündür seriyi bozmadın. Bu hafta rozetler çekişmeli, haftanın Nikola Tesla'sı olmak için testleri kaçırma!"
+        mesaj = f"Harikasın {ogrenci['ad']}! 🔥 {ogrenci['streak']} günlük serin var. Canlı sohbet odasında arkadaşlar kaynıyor, testi çözüp zirveyi zorla!"
         st.markdown(f"""
             <div class="limoncan-box">
                 <p style="margin: 0; font-size: 15px; color: #333333; font-weight: 500;">
@@ -136,7 +149,13 @@ else:
 
     st.markdown("---")
 
-    sekme1, sekme2, sekme3 = st.tabs(["📰 Kampüs Panosu", "📝 Günün Testi", "👑 Haftanın Mahlasları & Rozetler"])
+    sekme1, sekme2, sekme3, sekme4, sekme5 = st.tabs([
+        "📰 Kampüs Panosu", 
+        "💬 Canlı Sohbet", 
+        "🏆 Liderlik Tablosu", 
+        "📝 Çoklu Testler", 
+        "👑 Mahlaslar & Rozetler"
+    ])
     
     with sekme1:
         st.subheader("Okulda Neler Oluyor?")
@@ -163,17 +182,72 @@ else:
                     st.rerun()
 
     with sekme2:
-        st.subheader("Günün Soru Paketi")
-        cevap = st.radio("1. Aşağıdakilerden hangisi bir yazılım dilidir?", ["Python", "HTML", "Tornavida", "Cetvel"])
-        if st.button("Cevabı Gönder"):
-            if cevap == "Python":
-                st.balloons()
-                ogrenci["puan"] += 25
-                st.success("Tebrikler! +25 Puan kazandın! 🍋")
-            else:
-                st.error("Yanlış cevap, bir daha dene!")
+        st.subheader("💬 Kampüs Canlı Sohbet Odası")
+        st.markdown("Arkadaşlarına mesaj gönder, kampüsün nabzını tut!")
+        
+        for chat in st.session_state.chat_odasi:
+            st.markdown(f"""
+            <div class="chat-bubble">
+                <b>{chat['isim']}:</b> {chat['mesaj']}
+            </div>
+            """, unsafe_allow_html=True)
+            
+        with st.form("chat_formu", clear_on_submit=True):
+            yeni_mesaj = st.text_input("Mesajını yaz...")
+            gonder = st.form_submit_button("Gönder 🚀")
+            if gonder and yeni_mesaj:
+                st.session_state.chat_odasi.append({"isim": ogrenci["ad"], "mesaj": yeni_mesaj})
+                st.rerun()
 
     with sekme3:
+        st.subheader("🏆 Okul Geneli Liderlik Tablosu")
+        st.markdown("En çok XP toplayan zirvedekiler:")
+        
+        # Puanlarına göre sıralama
+        sirali_ogrenciler = sorted(st.session_state.ogrenciler_veritabani.values(), key=lambda x: x["puan"], reverse=True)
+        
+        for sira, o in enumerate(sirali_ogrenciler, 1):
+            ikon = "🥇" if sira == 1 else "🥈" if sira == 2 else "🥉" if sira == 3 else f"{sira}."
+            st.markdown(f"""
+            <div style="background-color: white; padding: 10px 15px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid #D4A017; display: flex; justify-content: space-between;">
+                <span><b>{ikon} {o['ad']}</b> (No: {o['no']})</span>
+                <span style="color: #D4A017; font-weight: bold;">{o['puan']} XP</span>
+            </div>
+            """, unsafe_allow_html=True)
+
+    with sekme4:
+        st.subheader("📝 Branş Soru Paketleri")
+        brans = st.selectbox("Hangi dersten soru çözmek istersin?", ["Bilişim & Yazılım", "Matematik", "Fen Bilimleri"])
+        
+        if brans == "Bilişim & Yazılım":
+            cevap = st.radio("1. Aşağıdakilerden hangisi bir yazılım dilidir?", ["Python", "HTML", "Tornavida", "Cetvel"])
+            if st.button("Cevabı Gönder", key="test1"):
+                if cevap == "Python":
+                    st.balloons()
+                    ogrenci["puan"] += 25
+                    st.success("Tebrikler! +25 Puan kazandın! 🍋")
+                else:
+                    st.error("Yanlış cevap, bir daha dene!")
+        elif brans == "Matematik":
+            cevap2 = st.radio("1. 5 x 8 işleminin sonucu nedir?", ["35", "40", "45", "50"])
+            if st.button("Cevabı Gönder", key="test2"):
+                if cevap2 == "40":
+                    st.balloons()
+                    ogrenci["puan"] += 30
+                    st.success("Harikasın Cahit Arf adayı! +30 Puan kazandın! 📐")
+                else:
+                    st.error("Yanlış cevap!")
+        else:
+            cevap3 = st.radio("1. Suyun donma sıcaklığı kaç derecedir?", ["0", "100", "50", "-10"])
+            if st.button("Cevabı Gönder", key="test3"):
+                if cevap3 == "0":
+                    st.balloons()
+                    ogrenci["puan"] += 30
+                    st.success("Süpersin Nikola Tesla! +30 Puan kazandın! ⚡")
+                else:
+                    st.error("Yanlış cevap!")
+
+    with sekme5:
         st.subheader("👑 Haftanın Efsane Mahlasları ve Rozetleri")
         st.markdown("Her pazartesi güncellenen resmi kampüs unvanları:")
         
@@ -192,7 +266,7 @@ else:
 
             <div class="badge-box">
                 <h3 style="color: #D4A017; margin: 0;">📐 Haftanın Cahit Arf'ı (Matematik)</h3>
-                <p style="margin: 5px 0 0 0; font-size: 16px; font-weight: bold; color: #333;">Henüz Sahibi Çıkmadı! (Sen Kap)</p>
-                <p style="font-size: 13px; color: #666; margin: 2px 0 0 0;">Matematik sorularını ağlatan ezici güç bekleniyor...</p>
+                <p style="margin: 5px 0 0 0; font-size: 16px; font-weight: bold; color: #333;">Rana Aksoy</p>
+                <p style="font-size: 13px; color: #666; margin: 2px 0 0 0;">Matematik sorularını ağlatan ezici güç tahtayı ele geçirdi!</p>
             </div>
         """, unsafe_allow_html=True)
